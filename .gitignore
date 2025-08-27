@@ -4,3 +4,25 @@ dist/
 
 # Ignore PyInstaller spec files
 *.spec
+
+# PyInstaller outputs
+/build/
+/dist/
+*.spec
+
+# Python junk
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+.env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Release archives
+*.zip
+*.tar.gz
