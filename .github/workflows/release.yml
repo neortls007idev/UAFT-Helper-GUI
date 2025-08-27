@@ -1,0 +1,35 @@
+name: Release (PyInstaller)
+
+on:
+  push:
+    tags: [ "v*.*.*" ]   # runs when you push a tag like v0.1.0
+
+permissions:
+  contents: write        # needed to create a GitHub Release
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install PySide6 pyinstaller
+
+      - name: Build
+        shell: pwsh
+        run: |
+          pyinstaller --clean --noconfirm --windowed --name "UAFT Helper GUI" UE_UAFT_Tool.py
+          Copy-Item README.md,LICENSE,NOTICE "dist\UAFT Helper GUI" -ErrorAction SilentlyContinue
+          Compress-Archive -Path "dist\UAFT Helper GUI\*" -DestinationPath "UAFT_Helper_GUI-Windows-${{ github.ref_name }}.zip"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: UAFT_Helper_GUI-Windows-${{ github.ref_name }}.zip
